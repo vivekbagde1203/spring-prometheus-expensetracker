@@ -1,0 +1,21 @@
+The app uses an in-memory user.
+Username: admin
+Password: admin123
+Notes:
+
+
+You can change credentials in SecurityConfig.java (the userDetailsService bean).
+
+
+/actuator/prometheus and /export/** are currently permitted without auth (so Prometheus can scrape and you can download CSV/XLSX). If you want them protected, tell me and I’ll show how to require auth while still allowing Prometheus to scrape.
+
+
+* mvn clean package -DskipTests
+* java -jar target/spring-prometheus-demo-1.0.0.jar
+* curl http://localhost:8080/actuator/prometheus
+
+I have developed this because i wanted to test HTTP request rate and HTTP error rate.
+/Users/vivekbagde/Downloads/spring-prometheus-demo   --> Refer this
+refer /Users/vivekbagde/Downloads/production-monitoring-bundle --> refer this for grafana dashboard http rate and error rate.
+
+

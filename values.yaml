@@ -1,0 +1,47 @@
+replicaCount: 1
+namespace:
+  name: dev
+env:
+  - name: APP_MODE
+    value: production
+  - name: LOG_LEVEL
+    value: debug
+  - name: API_KEY
+    value: "12345"
+image:
+  repository: spring-prometheus-expensetracker
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1.0.21"
+container:
+  port: 8080
+
+podAnnotations:
+  iam.amazonaws.com/role: my-role
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9090"
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 80
+
+virtualService:
+  enabled: true
+  gateway: "istio-system/monitoring-gateway"
+  hosts:
+    - "*"
+  paths:
+    - "/"
+
+  destination:
+    host: "spring-demo-prometheus.dev.svc.cluster.local"
+    port: 8080 

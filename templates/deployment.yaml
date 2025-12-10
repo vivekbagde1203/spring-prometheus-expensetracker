@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: "{{ $value }}"
+      {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: projectdocker1203/{{ .Values.image.name }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.container.port}}
+        env:
+        {{- range .Values.env }}
+        - name: {{ .name }}
+          value: "{{ .value }}"
+        {{- end }}
